@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modélisation STRATEAU de la Province d'Ifrane — Blocs 1 & 2</title>
+
+    <!-- Polices éditoriales (Fraunces + Plus Jakarta Sans + JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+    <!-- MathJax (LaTeX) -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* =================================================================
+           STYLE ÉDITORIAL : FOND BLANC, ENCRE NOIRE, PC & TÉLÉPHONE
+           ================================================================= */
+        * { box-sizing: border-box; }
+        
+        html, body {
+            background-color: #ffffff;
+            color: #111111;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            scroll-snap-align: start;
+            padding: 26px 5vw 20px 5vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+            position: relative;
+        }
+
+        /* =================================================================
+           SLIDE 01 : HERO "BLOW-MIND" HYDRO-TOPOGRAPHIQUE ANIMÉE EN DIRECT
+           ================================================================= */
+        .slide-hero-animated {
+            background: radial-gradient(circle at 75% 30%, #1e3a8a 0%, #0f172a 55%, #020617 100%) !important;
+            color: #ffffff !important;
+            overflow: hidden;
+            border-bottom: 2px solid #38bdf8 !important;
+        }
+        #hero-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-glow-orb {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            right: 8%;
+            top: 14%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.05) 55%, transparent 75%);
+            filter: blur(35px);
+            z-index: 1;
+            animation: orbPulse 8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes orbPulse {
+            0% { transform: scale(0.92) translate(-20px, 10px); opacity: 0.75; }
+            100% { transform: scale(1.12) translate(20px, -15px); opacity: 1; }
+        }
+        .slide-hero-animated .slide-header,
+        .slide-hero-animated .slide-footer,
+        .hero-main-grid {
+            position: relative;
+            z-index: 5;
+        }
+        .slide-hero-animated .slide-header {
+            border-bottom: 1.5px solid rgba(148, 163, 184, 0.35) !important;
+        }
+        .slide-hero-animated .section-num,
+        .slide-hero-animated .header-meta {
+            color: #7dd3fc !important;
+        }
+        .slide-hero-animated .slide-footer {
+            border-top: 1px solid rgba(148, 163, 184, 0.3) !important;
+            color: #93c5fd !important;
+        }
+        .hero-main-grid {
+            display: grid;
+            grid-template-columns: 58% 38%;
+            gap: 4%;
+            align-items: center;
+            margin: auto 0;
+            padding: 20px 0;
+        }
+        .hero-left {
+            border-left: 5px solid #38bdf8;
+            padding-left: 28px;
+        }
+        .hero-kicker-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            background: linear-gradient(90deg, #7dd3fc 0%, #38bdf8 100%);
+            padding: 6px 14px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.45);
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #020617;
+            border-radius: 50%;
+            animation: blinkDot 1.6s infinite;
+        }
+        @keyframes blinkDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.35; }
+        }
+        .hero-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 52px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.1;
+            letter-spacing: -1.2px;
+            margin: 0 0 18px 0;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+        .hero-title span.grad-word {
+            background: linear-gradient(90deg, #ffffff 0%, #7dd3fc 55%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18.5px;
+            font-weight: 400;
+            color: #cbd5e1;
+            line-height: 1.55;
+            margin: 0 0 28px 0;
+            max-width: 720px;
+        }
+        .hero-stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        .hero-stat-box {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(125, 211, 252, 0.28);
+            backdrop-filter: blur(10px);
+            padding: 12px 14px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .hero-stat-box:hover {
+            transform: translateY(-4px);
+            border-color: #38bdf8;
+        }
+        .hero-stat-val {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+            line-height: 1.1;
+        }
+        .hero-stat-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 5px;
+        }
+
+        /* Colonne droite de la Slide 01 : Cartes 3D flottantes des 3 Blocs STRATEAU */
+        .hero-right-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            perspective: 1000px;
+        }
+        .hero-glass-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-left: 4px solid #38bdf8;
+            backdrop-filter: blur(12px);
+            padding: 16px 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            transition: transform 0.35s ease, background 0.35s ease;
+            animation: floatCard 6s ease-in-out infinite;
+        }
+        .hero-glass-card:nth-child(2) {
+            border-left-color: #f472b6;
+            animation-delay: -2s;
+            margin-left: 18px;
+        }
+        .hero-glass-card:nth-child(3) {
+            border-left-color: #34d399;
+            animation-delay: -4s;
+        }
+        .hero-glass-card:hover {
+            transform: translateX(-6px) scale(1.02);
+            background: rgba(255, 255, 255, 0.11);
+        }
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .hgc-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .hgc-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #7dd3fc;
+        }
+        .hgc-metric {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+        }
+        .hero-glass-card h4 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+        }
+        .hero-glass-card p {
+            font-size: 12.5px;
+            color: #cbd5e1;
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        /* =================================================================
+           DIAPOSITIVES DE TRANSITION (BLOC 1 : VERT SAUGE | BLOC 2 : ROSE CIEL)
+           ================================================================= */
+        .slide-transition-bloc1 {
+            background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%);
+            color: #064e3b;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-bottom: 2px solid #059669;
+        }
+        .slide-transition-bloc1 .slide-header { border-bottom: 1.5px solid #047857; }
+        .slide-transition-bloc1 .section-num,
+        .slide-transition-bloc1 .header-meta { color: #047857; }
+        .slide-transition-bloc1 .transition-center {
+            margin: auto 0;
+            padding: 46px 0 46px 32px;
+            border-left: 6px solid #059669;
+        }
+        .slide-transition-bloc1 .transition-kicker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #047857;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid #059669;
+            padding: 5px 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .slide-transition-bloc1 .transition-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #022c22;
+            line-height: 1.14;
+            letter-spacing: -1px;
+            margin: 0 0 18px 0;
+            max-width: 980px;
+        }
+        .slide-transition-bloc1 .transition-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            font-weight: 500;
+            color: #065f46;
+            margin: 0;
+            max-width: 880px;
+        }
+        .slide-transition-bloc1 .slide-footer {
+            border-top: 1px solid #6ee7b7;
+            color: #047857;
+        }
+
+        /* Transition Bloc 2 : Rose Ciel */
+        .slide-transition {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fbcfe8 100%);
+            color: #831843;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-bottom: 2px solid #db2777;
+        }
+        .slide-transition .slide-header { border-bottom: 1.5px solid #be185d; }
+        .slide-transition .section-num,
+        .slide-transition .header-meta { color: #be185d; }
+        .transition-center {
+            margin: auto 0;
+            padding: 46px 0 46px 32px;
+            border-left: 6px solid #db2777;
+        }
+        .transition-kicker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #be185d;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid #db2777;
+            padding: 5px 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .transition-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 50px;
+            font-weight: 700;
+            color: #4c0519;
+            line-height: 1.14;
+            letter-spacing: -1px;
+            margin: 0 0 18px 0;
+            max-width: 980px;
+        }
+        .transition-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            font-weight: 500;
+            color: #9d174d;
+            margin: 0;
+            max-width: 860px;
+        }
+        .slide-transition .slide-footer {
+            border-top: 1px solid #f9a8d4;
+            color: #be185d;
+        }
+
+        /* En-tête minimaliste */
+        .slide-header {
+            border-bottom: 1.5px solid #111111;
+            padding-bottom: 9px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .header-left { max-width: 78%; }
+        .section-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #555555;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 3px;
+            display: block;
+        }
+        .section-num.tag-geo { color: #15803d; }
+        .section-num.tag-mnt { color: #b45309; }
+        .section-num.tag-sol { color: #7c2d12; }
+        .section-num.tag-sat { color: #0369a1; }
+        .section-num.tag-infra { color: #b91c1c; }
+        .section-num.tag-hydro { color: #0369a1; }
+        .section-num.tag-nappe { color: #6d28d9; }
+
+        h1 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 25.5px;
+            font-weight: 600;
+            color: #111111;
+            margin: 0;
+            line-height: 1.18;
+            letter-spacing: -0.5px;
+        }
+        h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #444444;
+            margin: 3px 0 0 0;
+        }
+        .header-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #444444;
+            text-align: right;
+            line-height: 1.45;
+        }
+
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: 41% 55%;
+            gap: 4%;
+            flex: 1;
+            align-items: start;
+        }
+        .editorial-grid-equal {
+            display: grid;
+            grid-template-columns: 48% 48%;
+            gap: 4%;
+            flex: 1;
+            align-items: start;
+        }
+        .col-text { padding-right: 10px; }
+        .col-visual {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid #e5e5e5;
+            padding-left: 3.5%;
+        }
+
+        h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 17.5px;
+            font-weight: 600;
+            color: #111111;
+            margin: 0 0 7px 0;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.54;
+            color: #222222;
+            margin: 0 0 8px 0;
+        }
+        ul.clean-list {
+            margin: 0 0 10px 0;
+            padding-left: 18px;
+            font-size: 14px;
+            line-height: 1.54;
+            color: #222222;
+        }
+        ul.clean-list li { margin-bottom: 6px; }
+        ul.clean-list strong { color: #000000; font-weight: 700; }
+
+        .hl-red { color: #b91c1c; font-weight: 700; }
+        .hl-blue { color: #0369a1; font-weight: 700; }
+        .hl-green { color: #15803d; font-weight: 700; }
+        .hl-purple { color: #6d28d9; font-weight: 700; }
+        .hl-amber { color: #b45309; font-weight: 700; }
+
+        .math-block {
+            border-left: 2.5px solid #111111;
+            padding: 5px 0 5px 14px;
+            margin: 8px 0;
+            font-size: 13.2px;
+        }
+        .math-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444444;
+            margin-bottom: 3px;
+        }
+
+        /* =================================================================
+           EFFET DE SUPERPOSITION 2 CARTES PAR INDICE (DIAPOS 08, 09, 10, 11)
+           ================================================================= */
+        .dual-stack {
+            position: relative;
+            height: 222px;
+            margin: 0 0 12px 0;
+            border: 1px dashed #94a3b8;
+            background: #f8fafc;
+            padding: 8px;
+        }
+        .dual-stack.single-zone {
+            height: 232px;
+            margin-bottom: 10px;
+        }
+        .dual-stack-card {
+            position: absolute;
+            width: 68%;
+            height: 178px;
+            border: 1.5px solid #111111;
+            background: #ffffff;
+            box-shadow: 4px 4px 0px #111111;
+            overflow: hidden;
+            cursor: zoom-in;
+            transition: transform 0.25s ease, z-index 0.2s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .dual-stack-card:hover {
+            transform: scale(1.035) translateY(-4px);
+            z-index: 40 !important;
+            box-shadow: 6px 6px 0px #0369a1;
+        }
+        .dual-stack-card img {
+            width: 100%;
+            height: 148px;
+            object-fit: contain;
+            background: #ffffff;
+            display: block;
+        }
+        .dual-stack-card .stack-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.8px;
+            font-weight: 700;
+            background: #111111;
+            color: #ffffff;
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ds-back {
+            top: 8px;
+            left: 1.5%;
+            z-index: 12;
+        }
+        .ds-front {
+            top: 32px;
+            left: 30.5%;
+            z-index: 22;
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #111111;
+            padding-bottom: 4px;
+            margin-bottom: 5px;
+        }
+        .chart-main-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 14.8px;
+            font-weight: 600;
+            color: #111111;
+        }
+        .chart-surface {
+            width: 100%;
+            height: 210px;
+            background: transparent;
+        }
+        .axis-x-footer {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #111111;
+            margin-top: 3px;
+            padding-top: 3px;
+            border-top: 1px dotted #cccccc;
+        }
+
+        figure.asset-figure {
+            margin: 0 0 9px 0;
+            position: relative;
+        }
+        figure.asset-figure img.zoomable {
+            width: 100%;
+            max-height: 390px;
+            object-fit: contain;
+            border: 1.5px solid #111111;
+            display: block;
+            cursor: zoom-in;
+            transition: opacity 0.2s ease;
+            background: #fafafa;
+        }
+        figure.asset-figure img.zoomable.tall-soil {
+            max-height: 295px;
+        }
+        figure.asset-figure img.zoomable.medium-map {
+            max-height: 205px;
+        }
+        figure.asset-figure img.zoomable.small-map {
+            max-height: 165px;
+        }
+        figure.asset-figure img.zoomable:hover { opacity: 0.92; }
+        figure.asset-figure figcaption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #444444;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .zoom-hint {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #111111;
+            border-bottom: 1px dotted #111111;
+            cursor: pointer;
+        }
+        .dual-assets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        table.academic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.3px;
+            margin: 4px 0 9px 0;
+            border-top: 2px solid #111111;
+            border-bottom: 2px solid #111111;
+        }
+        table.academic-table th {
+            text-align: left;
+            padding: 5px 7px;
+            border-bottom: 1px solid #111111;
+            font-weight: 700;
+            color: #111111;
+        }
+        table.academic-table td {
+            padding: 4.5px 7px;
+            border-bottom: 1px solid #e5e5e5;
+            color: #222222;
+            vertical-align: middle;
+        }
+
+        .metrics-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-top: 1px solid #111111;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+        .metric-item .val {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #111111;
+        }
+        .metric-item .lbl {
+            font-size: 11px;
+            color: #444444;
+            margin-top: 2px;
+        }
+
+        /* Architecture STRATEAU en 3 Blocs (Slide 02) */
+        .strateau-blocs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .s-bloc-card {
+            border: 1.5px solid #111111;
+            padding: 9px 11px;
+            background: #ffffff;
+        }
+        .s-bloc-card .sb-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .s-bloc-card h4 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 14.5px;
+            margin: 0 0 4px 0;
+        }
+        .s-bloc-card p {
+            font-size: 11.8px;
+            margin: 0;
+            color: #444444;
+            line-height: 1.38;
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #666666;
+            border-top: 1px solid #e5e5e5;
+            padding-top: 6px;
+            margin-top: 5px;
+        }
+
+        .page-index {
+            position: fixed;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            z-index: 100;
+        }
+        .page-tick {
+            width: 8px;
+            height: 1.5px;
+            background: #bbbbbb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .page-tick.active {
+            width: 18px;
+            height: 2px;
+            background: #111111;
+        }
+
+        /* Lightbox Plein Écran */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.97);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            cursor: zoom-out;
+        }
+        .lightbox-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .lightbox-overlay img {
+            max-width: 92vw;
+            max-height: 82vh;
+            object-fit: contain;
+            border: 1.5px solid #111111;
+        }
+        .lightbox-caption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #111111;
+            margin-top: 14px;
+            text-align: center;
+            max-width: 85vw;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #111111;
+            border: 1px solid #111111;
+            padding: 6px 12px;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        /* =================================================================
+           ADAPTATION COMPLÈTE POUR TÉLÉPHONE & TABLETTE (RESPONSIVE)
+           ================================================================= */
+        @media (max-width: 960px) {
+            html, body { scroll-snap-type: none; height: auto; overflow-y: auto; }
+            .slide { min-height: auto; padding: 22px 4.5vw 20px 4.5vw; }
+            .slide-transition, .slide-transition-bloc1, .slide-hero-animated { min-height: 92vh; }
+            .hero-main-grid { grid-template-columns: 1fr; gap: 24px; }
+            .hero-title { font-size: 34px !important; }
+            .hero-stats-bar { grid-template-columns: 1fr 1fr; }
+            .hero-glass-card:nth-child(2) { margin-left: 0; }
+            .transition-title { font-size: 32px !important; }
+            .transition-sub { font-size: 15px !important; }
+            .slide-header { flex-direction: column; gap: 6px; }
+            .header-left { max-width: 100%; }
+            .header-meta { text-align: left; font-size: 10.5px; }
+            h1 { font-size: 21px; }
+            h2 { font-size: 13px; }
+            .editorial-grid, .editorial-grid-equal { grid-template-columns: 1fr; gap: 18px; }
+            .col-text { padding-right: 0; }
+            .col-visual { border-left: none; border-top: 1px solid #e5e5e5; padding-left: 0; padding-top: 14px; }
+            .dual-assets, .strateau-blocs-grid { grid-template-columns: 1fr; }
+            .dual-stack {
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .dual-stack-card {
+                position: relative;
+                top: auto !important;
+                left: auto !important;
+                width: 100%;
+                height: auto;
+            }
+            .chart-surface { height: 250px !important; }
+            table.academic-table { display: block; overflow-x: auto; white-space: nowrap; font-size: 11.5px; }
+            .slide-footer { flex-direction: column; gap: 4px; font-size: 10px; }
+            .page-index { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">FERMER [ÉCHAP]</button>
+        <img id="lightbox-img" src="" alt="Vue agrandie">
+        <div class="lightbox-caption" id="lightbox-cap"></div>
+    </div>
+
+    <div class="page-index" id="pageIndex"></div>
+
+    <!-- ================================================================= -->
+    <!-- 01. DIAPOSITIVE D'OUVERTURE "BLOW-MIND" ANIMÉE & INTERACTIVE      -->
+    <!-- ================================================================= -->
+    <section class="slide slide-hero-animated" data-slide="0" id="heroSlide">
+        <!-- Moteur d'animation hydro-topographique Canvas 2D/3D temps réel -->
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-glow-orb"></div>
+
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num">PROJET PILOTE STRATEAU • PROVINCE D'IFRANE</span>
+            </div>
+           
+        </div>
+
+        <div class="hero-main-grid">
+            <div class="hero-left">
+                <div class="hero-kicker-badge">
+                    <span class="live-dot"></span>
+                    <span>PRÉ-SOMMET JEUNESSE UMJAE · MARRAKECH, 2 NOVEMBRE 2026</span>
+                </div>
+                <h1 class="hero-title">Modélisation <span class="grad-word">STRATEAU</span> de la province d’Ifrane</h1>
+                <p class="hero-sub">Projet pilote UMJAE – Agence du Bassin Hydraulique du Sebou · État d’avancement et modélisation intégrée Climat–Ressources–Usages à l'échelle communale 
+                <br>
+                <br>Les Jeunes Ambassadeurs de l'eau de l'UM5, avec leurs encadrantes</p>
+
+            </div>
+
+
+        </div>
+
+        <div class="slide-footer">
+            <span>Ambassade de l’Eau · Cerema · ABH du Sebou · Université Mohammed V</span>
+            <span>01 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 02. INTRODUCTION SUR LA ZONE D'IFRANE & ARCHITECTURE STRATEAU     -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="1">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-geo">02 / Introduction sur la Zone Pilote d'Ifrane & Principe de l'Outil STRATEAU</span>
+                <h1>La Province d’Ifrane : Un Château d’Eau Naturel au Cœur du Moyen Atlas</h1>
+                <h2>Situation géographique (Région Fès-Meknès, Bassin du Sebou) et articulation des 3 Blocs du modèle prospectif STRATEAU</h2>
+            </div>
+            <div class="header-meta">ALTITUDE CHEF-LIEU : ~1 650 M<br>TEMPÉRATURE MOY. : &lt; 11 °C</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Pourquoi la province d'Ifrane comme premier territoire pilote ?</h3>
+                <ul class="clean-list">
+                    <li><strong>Position géographique :</strong> Située dans le <strong>Moyen Atlas central</strong>, au sud-ouest de la région <strong>Fès-Meknès</strong> (3 310 km², Bassin du Sebou). Son chef-lieu est la ville d'<strong>Ifrane (~1 650 m d'altitude)</strong> et sa ville la plus peuplée est <strong>Azrou</strong> (160 904 habitants en 2024 sur 10 communes).</li>
+                    <li><strong>Un « château d'eau naturel » très contrasté :</strong> Hauts plateaux et montagnes couverts de forêts (grands massifs de cèdres et de chênes), hivers froids et neigeux (dès octobre jusqu'au printemps), étés doux ($T_{\text{moy}} \le 11\text{ °C}$). Ce contraste entre sommets enneigés, forêts, plateaux agricoles et vallées basses justifie un suivi fin par MNT et télédétection.</li>
+                </ul>
+
+                <h3>2. L'outil STRATEAU : analyser tous les usages en 3 Blocs</h3>
+                <p>Développé par l'<strong>Ambassade de l'Eau</strong> et le <strong>Cerema</strong>, STRATEAU est un outil numérique d'aide à la gestion prospective et intégrée de la ressource en eau :</p>
+
+                <div class="strateau-blocs-grid">
+                    <div class="s-bloc-card" style="border-top: 4px solid #15803d;">
+                        <span class="sb-num" style="background:#dcfce7; color:#14532d;">BLOC 1</span>
+                        <h4>Données Contextualisées</h4>
+                        <p>Pluie, $ET_0$, MNT (altitude, pentes), pédologie et indices satellitaires Sentinel-2.</p>
+                    </div>
+                    <div class="s-bloc-card" style="border-top: 4px solid #db2777;">
+                        <span class="sb-num" style="background:#fce7f3; color:#831843;">BLOC 2</span>
+                        <h4>Ressources en Eau</h4>
+                        <p>Barrages, sous-bassins versants, réseau hydrographique (oueds), nappes et sources.</p>
+                    </div>
+                    <div class="s-bloc-card" style="border-top: 4px solid #0284c7;">
+                        <span class="sb-num" style="background:#e0f2fe; color:#0c4a6e;">BLOC 3</span>
+                        <h4>Besoins en Eau</h4>
+                        <p>Canevas par commune et par mois : Agriculture (FAO-56), Cheptel, AEPI, Industrie, Tourisme.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-visual">
+                <div class="dual-assets">
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" style="object-fit:cover;" src="assets/WhatsApp Image 2026-11-02 at 08.13.15.jpeg" alt="Fig 2.1 — Localisation satellite de la province d'Ifrane à l'échelle du Maroc (Moyen Atlas central)" onerror="this.src='https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=900&q=80'">
+                        <figcaption><span>Fig 2.1 — Situation à l'échelle du Maroc</span><span class="zoom-hint">[Zoomer]</span></figcaption>
+                    </figure>
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" style="object-fit:cover;" src="assets/WhatsApp Image 2026-11-02 at 08.13.16.jpeg" alt="Fig 2.2 — Vue satellite rapprochée et délimitation (en rouge) de la province d'Ifrane et de ses massifs forestiers" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80'">
+                        <figcaption><span>Fig 2.2 — Délimitation satellite d'Ifrane</span><span class="zoom-hint">[Zoomer]</span></figcaption>
+                    </figure>
+                </div>
+
+                <figure class="asset-figure" style="margin-bottom:0;">
+                    <img class="zoomable medium-map" src="assets/Ifrane-circo.jpg" alt="Fig 2.3 — Position de la province d'Ifrane (en rouge) au sud-ouest de la région Fès-Meknès (entourée d'El Hajeb, Sefrou et Boulemane)" onerror="this.src='https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80'">
+                    <figcaption><span>Fig 2.3 — Position administrative d'Ifrane au sud-ouest de la région Fès-Meknès</span><span class="zoom-hint">[Zoomer]</span></figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span> : Données Contextualisées — Zone Pilote d'Ifrane & Architecture en 3 Blocs de STRATEAU</span>
+            <span>02 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 03. CADRE GÉOLOGIQUE & MORPHOLOGIE MNT (ALTITUDE & PENTES)        -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="2">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-mnt">03 / Introduction — Cadre Géologique & Géomorphologie Issue du MNT (1/2)</span>
+                <h1>Structure Géologique, Étagement Altitudinal (722 à 2 420 m) et Pentes</h1>
+                <h2>Analyse de l'écoulement général nord-ouest / sud-est et identification des zones d'escarpement sensibles à l'érosion</h2>
+            </div>
+            <div class="header-meta">MNT : 722 M À 2 420 M<br>PENTES : MAJORITÉ &lt; 20 %</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Cadre géologique et réservoirs karstiques</h3>
+                <p>La carte géologique d'Ifrane (Fig 3.1) met en évidence la prédominance des formations carbonatées liasiques (calcaires et dolomies du Causse moyen-atlasique) et des coulées basaltiques quaternaires, favorisant l'infiltration et la recharge des nappes.</p>
+
+                <h3>2. Analyse de l'altitude du bassin (722 m à 2 420 m)</h3>
+                <ul class="clean-list">
+                    <li><strong>Gradient topographique :</strong> L'altitude s'élève de <span class="hl-red">722 m</span> (zones basses en rouge à l'ouest et au nord) jusqu'à <span class="hl-blue">2 420 m</span> (zones hautes en bleu foncé au sud et au sud-est).</li>
+                    <li><strong>Sens d'écoulement général :</strong> Le bassin monte progressivement du nord-ouest vers le sud-est, ce qui impose un <strong>écoulement hydrologique général dirigé vers le nord et le nord-ouest</strong>.</li>
+                </ul>
+
+                <h3>3. Répartition des pentes et sensibilité à l'érosion</h3>
+                <ul class="clean-list">
+                    <li><strong>Prédominance des plateaux :</strong> La majeure partie du bassin présente des <strong>pentes faibles à moyennes</strong> (en vert, <span class="hl-green">moins de 20 %</span>).</li>
+                    <li><strong>Escarpements érosifs :</strong> Les pentes fortes (orange et rouge, de 47 % jusqu'à 184 %) se concentrent sur les <strong>bordures de plateaux</strong>, dans le sud et le long des escarpements de failles, constituant les zones les plus exposées à l'érosion hydrique.</li>
+                </ul>
+            </div>
+
+            <div class="col-visual">
+                <figure class="asset-figure" style="margin-bottom:8px;">
+                    <img class="zoomable medium-map" src="assets/carte geologique Ifrane.png" alt="Fig 3.1 — Carte géologique de la province d'Ifrane (Causse tabulaire, Moyen Atlas plissé et coulées basaltiques)" onerror="this.src='assets/Carte des pentes d\'Ifrane.png'">
+                    <figcaption><span>Fig 3.1 — Carte géologique de la province d'Ifrane (`carte geologique Ifrane.png`)</span><span class="zoom-hint">[Cliquer pour agrandir]</span></figcaption>
+                </figure>
+
+                <figure class="asset-figure" style="margin-bottom:0;">
+                    <img class="zoomable medium-map" src="assets/Carte d'altitude d'Ifrane.png" alt="Fig 3.2 — Carte d'altitude du bassin d'Ifrane issue du MNT (de 722 m en rouge au NO jusqu'à 2 420 m en bleu au SE)" onerror="this.src='https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=900&q=80'">
+                    <figcaption><span>Fig 3.2 — Carte d'altitude du bassin d'Ifrane (`Carte d'altitude d'Ifrane.png`, 722 à 2 420 m)</span><span class="zoom-hint">[Cliquer pour agrandir]</span></figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Introduction : Données Contextualisées — Cadre Géologique, Altitude & Pentes (MNT)</span>
+            <span>03 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 04. INDICES TOPOGRAPHIQUES DÉRIVÉS DU MNT (RAYONNEMENT, TPI, RUG.)-->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="3">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-mnt">04 / Introduction — Paramètres Topographiques et Géomorphologiques Dérivés du MNT (2/2)</span>
+                <h1>Rayonnement Solaire Potentiel, Position Topographique (TPI), Humidité (TWI) et Rugosité</h1>
+                <h2>Influence de l'exposition des versants sur le bilan énergétique et distinction géomorphologique entre crêtes, vallées et plateaux</h2>
+            </div>
+            <div class="header-meta">RAYONNEMENT : 0,49 À 1,92 MWH/M²<br>TPI : CRÊTES (+) VS VALLÉES (-)</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Rayonnement solaire potentiel (490 000 à 1 925 000 Wh/m²)</h3>
+                <ul class="clean-list">
+                    <li>Déterminé par la pente et l'exposition, l'ensoleillement maximal (zones jaunes/rouges : <span class="hl-amber">1,58 à 1,92 MWh/m²</span>) couvre les hauts plateaux du <strong>centre et du sud-est</strong>, tandis que les versants ombragés de l'ouest reçoivent moins d'énergie (impact direct sur l'évapotranspiration et la fonte nivale).</li>
+                </ul>
+
+                <h3>2. Indice de Position Topographique (TPI) & Rugosité</h3>
+                <ul class="clean-list">
+                    <li><strong>TPI (-123,5 à +151,9) :</strong> Distingue nettement les <strong>crêtes</strong> (valeurs positives en rouge) et les <strong>vallées encaissées</strong> (valeurs négatives en bleu). La prédominance du jaune clair confirme l'extension des terrains plats ou à pente régulière, bordés de bandes plissées allongées au sud-est et à l'ouest.</li>
+                    <li><strong>Rugosité du terrain :</strong> Oppose les plateaux lisses (en jaune) aux versants accidentés rugueux (en rouge, marqués à l'ouest et au sud).</li>
+                </ul>
+
+                <div class="math-block" style="border-left-color:#b91c1c;">
+                    <div class="math-label" style="color:#b91c1c;">Diagnostic méthodologique sur l'Indice Topographique d'Humidité (TWI)</div>
+                    Le TWI théorique ($\ln(a / \tan\beta)$) identifie les zones d'accumulation hydrique. La carte brute présentant un bruit pixelisé et un minimum négatif (-9,56), un pré-lissage hydrologique du MNT est retenu pour son exploitation finale.
+                </div>
+            </div>
+
+            <div class="col-visual">
+                <div class="dual-assets">
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" src="assets/Carte du rayonnement solaire potentiel.png" alt="Fig 4.1 — Carte du rayonnement solaire potentiel (de 490 247 à 1 925 362 Wh/m²)" onerror="this.src='assets/Carte d\'altitude d\'Ifrane.png'">
+                        <figcaption><span>Fig 4.1 — Rayonnement solaire (Wh/m²)</span><span class="zoom-hint">[Zoom]</span></figcaption>
+                    </figure>
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" src="assets/Carte de l'indice de position topographique (TPI).png" alt="Fig 4.2 — Carte de l'Indice de Position Topographique (TPI : Crêtes en rouge vs Vallées en bleu)" onerror="this.src='assets/Carte d\'altitude d\'Ifrane.png'">
+                        <figcaption><span>Fig 4.2 — Position topographique (TPI)</span><span class="zoom-hint">[Zoom]</span></figcaption>
+                    </figure>
+                </div>
+
+                <div class="dual-assets" style="margin-bottom:0;">
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" src="assets/Carte de rugosité du terrain.png" alt="Fig 4.3 — Carte de rugosité du terrain (plateaux lisses en jaune vs versants accidentés en rouge)" onerror="this.src='assets/Carte d\'altitude d\'Ifrane.png'">
+                        <figcaption><span>Fig 4.3 — Rugosité du terrain</span><span class="zoom-hint">[Zoom]</span></figcaption>
+                    </figure>
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable small-map" src="assets/Carte des pentes d'Ifrane.png" alt="Fig 4.4 — Carte des pentes d'Ifrane (en % : pentes faibles < 20 % en vert, escarpements en rouge)" onerror="this.src='assets/Carte d\'altitude d\'Ifrane.png'">
+                        <figcaption><span>Fig 4.4 — Carte des pentes (%)</span><span class="zoom-hint">[Zoom]</span></figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Introduction : Données Contextualisées — Rayonnement Solaire, TPI, Rugosité & Pentes (MNT)</span>
+            <span>04 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 05. CARACTÉRISATION PÉDOLOGIQUE DES SOLS (SANS GRAPHE, CARTES XL) -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="4">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-sol">05 / Introduction — Caractérisation Pédologique des Sols par Profondeur (Horizon 0–5 cm)</span>
+                <h1>Texture du Sol (Limon, Sable, Argile), pH Calcaire et Matière Organique</h1>
+                <h2>Opposition spatiale entre l'ouest limono-argileux (rétention d'eau et battance) et le centre-est sableux plus drainant</h2>
+            </div>
+            <div class="header-meta">TEXTURE & CHIMIE DES SOLS<br>PH : 6,5 À 7,9 (CALCAIRE)</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>Synthèse des 5 paramètres pédologiques cartographiés</h3>
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Paramètre (0–5 cm)</th>
+                            <th>Plage de valeurs</th>
+                            <th>Répartition spatiale & Comportement hydrique</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Limon</strong></td>
+                            <td>0 à <strong>463 g/kg</strong></td>
+                            <td>Fort à l'<strong>ouest et nord-ouest</strong> (sensible à la battance et à l'érosion), faible au sud.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Sable</strong></td>
+                            <td>0 à <span class="hl-amber">509 g/kg</span></td>
+                            <td><strong>Inverse du limon :</strong> domine au <strong>centre, est et sud</strong> (sols légers et très drainants).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Argile</strong></td>
+                            <td>0 à <span class="hl-red">336 g/kg</span></td>
+                            <td>Concentrée à l'<strong>ouest et au centre</strong> : forte rétention d'eau (réserve utile) mais faible perméabilité.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. pH du sol</strong></td>
+                            <td>65 à 79 (<span class="hl-blue">pH 6,5 à 7,9</span>)</td>
+                            <td>Valeurs $\text{pH}\times 10$ (dominante <strong>7,5 à 7,7</strong>) : sol neutre à légèrement basique typique des roches calcaires.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Matière Organique</strong></td>
+                            <td>0 à <span class="hl-green">1 095</span></td>
+                            <td>Bandes très riches (bleu foncé) le long de l'<strong>axe central NE–SO</strong> correspondant aux forêts de cèdres/chênes et fonds humides.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="math-block" style="border-left-color:#7c2d12;">
+                    <div class="math-label" style="color:#7c2d12;">Lien direct avec le Bloc 3 (Bilan Hydrique FAO-56)</div>
+                    La complémentarité Argile/Sable/Matière organique contrôle la <strong>Réserve Facilement Utilisable (RFU)</strong> du sol paramétrée dans la feuille <code>C_Feuil2_Parametres</code> de STRATEAU.
+                </div>
+
+                <div class="metrics-strip">
+                    <div class="metric-item">
+                        <div class="val" style="color:#b45309;">509 g/kg</div>
+                        <div class="lbl">Sable Max (Centre & Est)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="val" style="color:#b91c1c;">336 g/kg</div>
+                        <div class="lbl">Argile Max (Ouest & Centre)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="val" style="color:#15803d;">pH 7,5–7,7</div>
+                        <div class="lbl">Dominante Calcaire</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTES PÉDOLOGIQUES AGRANDIES (SANS GRAPHE ECHARTS) -->
+            <div class="col-visual">
+                <div class="dual-assets" style="margin-bottom:14px;">
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable tall-soil" src="assets/Carte de la teneur en argile du sol par profondeur.png" alt="Fig 5.1 — Carte de la teneur en argile (0–5 cm, jusqu'à 336 g/kg) et en limon (jusqu'à 463 g/kg)" onerror="this.src='assets/carte geologique Ifrane.png'">
+                        <figcaption><span>Fig 5.1 — Teneur en Argile (max 336) & Limon</span><span class="zoom-hint">[Cliquer pour agrandir]</span></figcaption>
+                    </figure>
+                    <figure class="asset-figure" style="margin-bottom:0;">
+                        <img class="zoomable tall-soil" src="assets/Carte de la teneur en matiere organique du sol par profondeur.png" alt="Fig 5.2 — Carte de la matière organique (max 1 095 sur l'axe forestier NE-SO) et du pH (6,5 à 7,9)" onerror="this.src='assets/Carte d\'altitude d\'Ifrane.png'">
+                        <figcaption><span>Fig 5.2 — Matière organique (axe NE–SO) & pH</span><span class="zoom-hint">[Cliquer pour agrandir]</span></figcaption>
+                    </figure>
+                </div>
+
+                <div class="strateau-blocs-grid" style="margin-top:0;">
+                    <div class="s-bloc-card" style="border-top: 3.5px solid #b91c1c;">
+                        <span class="sb-num" style="background:#fef2f2; color:#991b1b;">OUEST & NORD-OUEST</span>
+                        <h4>Domaine Limono-Argileux</h4>
+                        <p>Forte capacité de rétention hydrique (RFU élevée), mais faible perméabilité favorisant la battance et le ruissellement.</p>
+                    </div>
+                    <div class="s-bloc-card" style="border-top: 3.5px solid #b45309;">
+                        <span class="sb-num" style="background:#fffbeb; color:#92400e;">CENTRE, EST & SUD</span>
+                        <h4>Domaine Sableux Drainant</h4>
+                        <p>Sols plus légers et filtrants (jusqu'à 509 g/kg de sable), favorisant l'infiltration rapide vers les calcaires karstiques.</p>
+                    </div>
+                    <div class="s-bloc-card" style="border-top: 3.5px solid #15803d;">
+                        <span class="sb-num" style="background:#dcfce7; color:#14532d;">AXE FORESTIER NE–SO</span>
+                        <h4>Humus & Matière Organique</h4>
+                        <p>Teneur maximale (1 095) sous les cédraies et chênaies d'altitude, stabilisant la structure du sol et l'humidité.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Données Contextualisées — Caractérisation Pédologique des Sols (Limon, Sable, Argile, pH, MO)</span>
+            <span>05 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 06. DIAPOSITIVE DE TRANSITION TÉLÉDÉTECTION (VERT SAUGE PASTEL)   -->
+    <!-- ================================================================= -->
+    <section class="slide slide-transition-bloc1" data-slide="5">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num">PROJET PILOTE STRATEAU • PROVINCE D'IFRANE</span>
+            </div>
+            <div class="header-meta">UMJAE • CEREMA • ABH DU SEBOU • UM5</div>
+        </div>
+
+        <div class="transition-center">
+            <span class="transition-kicker">PARTIE I (BLOC 1) • DONNÉES CONTEXTUALISÉES & TÉLÉDÉTECTION</span>
+            <h1 class="transition-title">Données Contextualisées et Télédétection Spatiale (Sentinel-2)</h1>
+            <p class="transition-sub">Caractérisation physique du territoire pilote d'Ifrane et suivi saisonnier (12 mois) et interannuel (2017–2025) par indices spectraux (NDVI, SAVI, NDWI, NDMI, NDSI, MSI) et température de surface (LST)</p>
+        </div>
+
+        <div class="slide-footer">
+            <span>Modélisation STRATEAU de la Province d'Ifrane — Bloc 1 : Télédétection Spatiale Sentinel-2</span>
+            <span>06 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 07. INTRODUCTION À SENTINEL-2 : BANDES SPECTRALES & MÉTHODOLOGIE  -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="6">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-sat">07 / Bloc 1 — Introduction au Suivi par Télédétection Spatiale (Satellite Sentinel-2)</span>
+                <h1>Exploitation des Bandes Spectrales Sentinel-2 et Chaîne de Calcul des Indices</h1>
+                <h2>Pourquoi, quoi et comment ? Suivi mensuel (12 mois) et interannuel (2017–2025) à haute résolution (10 m et 20 m)</h2>
+            </div>
+            <div class="header-meta">SENTINEL-2 (10 M & 20 M)<br>7 INDICES SPECTRAUX & LST</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Caractéristiques des bandes spectrales mobilisées</h3>
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Bande</th>
+                            <th>Domaine spectral ($nm$)</th>
+                            <th>Résolution</th>
+                            <th>Rôle biophysique dans la détection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>B3</strong></td>
+                            <td>Vert ($560\text{ nm}$)</td>
+                            <td><span class="hl-green">10 m</span></td>
+                            <td>L'eau et la neige réfléchissent fortement.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B4</strong></td>
+                            <td>Rouge ($665\text{ nm}$)</td>
+                            <td><span class="hl-green">10 m</span></td>
+                            <td>Fortement absorbée par la chlorophylle active.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B8</strong></td>
+                            <td>Proche Infrarouge ($842\text{ nm}$)</td>
+                            <td><span class="hl-green">10 m</span></td>
+                            <td>Massivement réfléchie par la structure foliaire.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B11</strong></td>
+                            <td>SWIR 1 ($1610\text{ nm}$)</td>
+                            <td><span class="hl-blue">20 m</span></td>
+                            <td>Très sensible à la teneur en eau des feuilles et à la neige.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Formules des 7 indicateurs (12 Mois + Chronique 2017–2025)</h3>
+                <div class="math-block">
+                    <div class="math-label">Végétation (NDVI & SAVI) • Eau & Humidité (NDWI & NDMI) • Neige & Stress (NDSI & MSI)</div>
+                    $$\text{NDVI} = \frac{B_8 - B_4}{B_8 + B_4} \quad ; \quad \text{NDMI} = \frac{B_8 - B_{11}}{B_8 + B_{11}} \quad ; \quad \text{NDSI} = \frac{B_3 - B_{11}}{B_3 + B_{11}} \quad ; \quad \text{MSI} = \frac{B_{11}}{B_8}$$
+                </div>
+                <p style="font-size:12.8px; margin:0;">Complétés par le <strong>NDWI</strong> (eau libre / sols nus), le <strong>SAVI</strong> (ajusté de l'effet du sol brillant) et la <strong>LST (Land Surface Temperature, en °C)</strong>.</p>
+            </div>
+
+            <div class="col-visual">
+                <div class="chart-wrapper">
+                    <div class="chart-top-bar">
+                        <span class="chart-main-title">Cycle Saisonnier Comparé des Indices Spectraux Maxima (Janvier à Décembre)</span>
+                    </div>
+                    <div id="chart-sentinel-cycle" class="chart-surface" style="height:365px;"></div>
+                    <div class="axis-x-footer">► AXE HORIZONTAL (X) : Dynamique Mensuelle Croisée (Pic de Neige NDSI en Hiver, Pic NDVI au Printemps, Pic Thermique LST en Été)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Télédétection Sentinel-2 — Bandes Spectrales (B3, B4, B8, B11) & Formules des Indices</span>
+            <span>07 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 08. SUIVI DE LA VÉGÉTATION : SUPERPOSITION NDVI & SAVI (12M + 9A) -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="7">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-geo">08 / Bloc 1 — Suivi Spatial, Saisonnier (12 Mois) et Interannuel (2017–2025) : NDVI & SAVI</span>
+                <h1>Dynamique de la Couverture Végétale : NDVI et SAVI (Saisonnier & 2017–2025)</h1>
+                <h2>Superposition du cycle mensuel (pic printanier mars–mai) et de l'évolution interannuelle (2017 à 2025)</h2>
+            </div>
+            <div class="header-meta">NDVI : MAX 0,97 (12M) / 1,00 (2021)<br>SAVI : MAX 0,88 (12M) / 0,76 (2019)</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. NDVI (Normalized Difference Vegetation Index)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> Culmine au <strong>printemps (mars à mai, <span class="hl-green">0,96–0,97</span>)</strong>, fléchit en été (juillet–août : 0,85) et reprend à l'automne.</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> Maximum d'activité végétale observé lors des années humides <strong>2018 (0,96)</strong> et <strong>2021 (1,00)</strong>, contre un fléchissement marqué lors de la sécheresse de <strong>2022 (0,785)</strong> et <strong>2025 (0,827)</strong>, avec maintien permanent du corridor forestier central SO–NE.</li>
+                </ul>
+
+                <h3>2. SAVI (Soil Adjusted Vegetation Index)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> En corrigeant la réflectance des sols calcaires ($L = 0{,}5$), le SAVI culmine en <strong>hiver–printemps (<span class="hl-green">0,83–0,88</span>)</strong> avec un creux estival (<span class="hl-amber">0,69–0,73</span>).</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> Valeurs hautes en <strong>2017 (0,739)</strong> et <strong>2019 (0,763)</strong>, suivies d'un point bas en <strong>2022 (0,584)</strong> avant une stabilisation entre <strong>0,625 et 0,674 (2023–2025)</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- SUPERPOSITION DES 2 PAIRES D'IMAGES : (1) NDVI 12M + NDVI_2017_2025.png | (2) SAVI 12M + SAVI_2017_2025.png -->
+            <div class="col-visual">
+                <!-- PAIRE 1 : NDVI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 8.1a — NDVI Saisonnier : Planche des 12 cartes mensuelles (Janvier à Décembre)')">
+                        <img src="assets/maps layout NDVI.png" alt="NDVI 12 mois" onerror="this.src='maps layout NDVI.png'">
+                        <div class="stack-lbl" style="background:#15803d;"><span>1a. NDVI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 8.1b — NDVI Interannuel (2017 à 2025) : Évolution pluriannuelle de la couverture végétale')">
+                        <img src="assets/NDVI_2017_2025.png" alt="NDVI 2017-2025" onerror="this.onerror=null; this.src='NDVI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>1b. NDVI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+
+                <!-- PAIRE 2 : SAVI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack" style="margin-bottom:0;">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 8.2a — SAVI Saisonnier : Planche des 12 cartes mensuelles ajustées au sol (Janvier à Décembre)')">
+                        <img src="assets/maps layout SAVI.png" alt="SAVI 12 mois" onerror="this.src='maps layout SAVI.png'">
+                        <div class="stack-lbl" style="background:#65a30d;"><span>2a. SAVI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 8.2b — SAVI Interannuel (2017 à 2025) : Évolution pluriannuelle ajustée au sol')">
+                        <img src="assets/SAVI_2017_2025.png" alt="SAVI 2017-2025" onerror="this.onerror=null; this.src='SAVI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>2b. SAVI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Télédétection Sentinel-2 — Superposition Mensuelle (12 Mois) & Interannuelle (2017–2025) : NDVI & SAVI</span>
+            <span>08 / 15</span>
+        </div>
+    </section>
+<!-- ================================================================= -->
+    <!-- 09. EAU & HUMIDITÉ : SUPERPOSITION NDWI & NDMI (12M + 2017–2025)  -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="8">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-sat">09 / Bloc 1 — Suivi Saisonnier (12 Mois) et Interannuel (2017–2025) : NDWI & NDMI</span>
+                <h1>Dynamique des Indices d’Eau (NDWI) et d’Humidité Foliaire (NDMI)</h1>
+                <h2>Superposition du cycle mensuel et de la série pluriannuelle (2017–2025) de la réserve hydrique végétale</h2>
+            </div>
+            <div class="header-meta">NDMI : MAX 0,96 (12M) / 0,97 (2021)<br>NDWI : SOLS NUS VS AXE BOISÉ</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. NDWI (Normalized Difference Water Index)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> Comportement spatial inverse du NDVI : les valeurs hautes marquent les zones ouvertes de sols nus calcaires, tandis que les valeurs basses suivent la bande boisée centrale.</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> Maxima proches de <strong>1,00 (2017, 2019, 2021)</strong> et minimum de la plage haute en <strong>2022 (0,785)</strong> et <strong>2024 (0,799)</strong>, mettant en évidence de façon constante la trace rouge-orangée du corridor forestier central SO–NE.</li>
+                </ul>
+
+                <h3>2. NDMI (Normalized Difference Moisture Index)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> Humidité foliaire maximale en <strong>hiver (<span class="hl-blue">0,898–0,96</span>)</strong> et minimale en <strong>plein été (<span class="hl-red">0,535–0,62 en juillet–août</span>)</strong> surtout au nord-ouest.</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> L'humidité végétale culmine lors des années humides <strong>2018 (0,778)</strong>, <strong>2019 (0,851)</strong> et surtout <strong>2021 (<span class="hl-blue">0,972</span>)</strong>, contre des années sèches très marquées en <strong>2020 (0,563)</strong> et <strong>2022–2025 (0,626 à 0,682)</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- SUPERPOSITION DES 2 PAIRES D'IMAGES : (1) NDWI 12M + NDWI_2017_2025.png | (2) NDMI 12M + NDMI_2017_2025.png -->
+            <div class="col-visual">
+                <!-- PAIRE 1 : NDWI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 9.1a — NDWI Saisonnier : Planche des 12 cartes mensuelles (Janvier à Décembre)')">
+                        <img src="assets/maps layout NDWI.png" alt="NDWI 12 mois" onerror="this.src='maps layout NDWI.png'">
+                        <div class="stack-lbl" style="background:#0369a1;"><span>1a. NDWI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 9.1b — NDWI Interannuel (2017 à 2025) : Évolution pluriannuelle de l\'indice NDWI')">
+                        <img src="assets/NDWI_2017_2025.png" alt="NDWI 2017-2025" onerror="this.onerror=null; this.src='NDWI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>1b. NDWI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+
+                <!-- PAIRE 2 : NDMI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack" style="margin-bottom:0;">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 9.2a — NDMI Saisonnier : Planche des 12 cartes mensuelles d\'humidité foliaire (Janvier à Décembre)')">
+                        <img src="assets/maps layout NDMII.png" alt="NDMI 12 mois" onerror="this.src='maps layout NDMII.png'">
+                        <div class="stack-lbl" style="background:#0284c7;"><span>2a. NDMI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 9.2b — NDMI Interannuel (2017 à 2025) : Évolution pluriannuelle de l\'humidité végétale')">
+                        <img src="assets/NDMI_2017_2025.png" alt="NDMI 2017-2025" onerror="this.onerror=null; this.src='NDMI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>2b. NDMI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Télédétection Sentinel-2 — Superposition Mensuelle (12 Mois) & Interannuelle (2017–2025) : NDWI & NDMI</span>
+            <span>09 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 10. NEIGE & STRESS : SUPERPOSITION NDSI & MSI (12M + 2017–2025)   -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="9">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-sat">10 / Bloc 1 — Suivi Saisonnier (12 Mois) et Interannuel (2017–2025) : NDSI & MSI</span>
+                <h1>Dynamique Nivale Hivernale (NDSI) et Stress Hydrique Végétal (MSI)</h1>
+                <h2>Superposition de la saisonnalité (neige hivernale vs stress estival) et des séries interannuelles (2017 à 2025)</h2>
+            </div>
+            <div class="header-meta">NDSI : MAX 0,95 (12M) / 0,965 (2021)<br>MSI : STRESS ESTIVAL & SÉCHERESSE</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. NDSI (Normalized Difference Snow Index)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> Enneigement net en <strong>janvier–février et novembre–décembre (<span class="hl-blue">max 0,87 à 0,95</span>)</strong> sur les reliefs du centre-sud et de l'est, suivi de la fonte printanière.</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> Les épisodes neigeux les plus étendus apparaissent en <strong>2018 (0,829)</strong>, <strong>2019 (0,805)</strong> et surtout <strong>2021 (<span class="hl-blue">0,965</span>)</strong> sur le causse central et sud-est, contre un recul nival prononcé en <strong>2022 (0,415)</strong> et sur la période récente <strong>2023–2025 (0,640 à 0,686)</strong>.</li>
+                </ul>
+
+                <h3>2. MSI (Moisture Stress Index : $B_{11} / B_8$)</h3>
+                <ul class="clean-list">
+                    <li><strong>Cycle saisonnier (12 mois) :</strong> Stress très faible en hiver–printemps, puis <strong>forte hausse en été (juin à août)</strong> dans le secteur nord-ouest plus bas et plus chaud.</li>
+                    <li><strong>Évolution interannuelle (2017–2025) :</strong> Contrastes marqués sur les plateaux du nord-ouest en <strong>2017, 2023 et 2024</strong> face à la résilience constante du massif forestier central (certaines années présentent des valeurs extrêmes isolées liées aux pixels saturés).</li>
+                </ul>
+            </div>
+
+            <!-- SUPERPOSITION DES 2 PAIRES D'IMAGES : (1) NDSI 12M + NDSI_2017_2025.png | (2) MSI 12M + MSI_2017_2025.png -->
+            <div class="col-visual">
+                <!-- PAIRE 1 : NDSI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 10.1a — NDSI Saisonnier : Planche des 12 cartes mensuelles de couverture neigeuse (Janvier à Décembre)')">
+                        <img src="assets/maps layout NDSI.jpg" alt="NDSI 12 mois" onerror="this.src='maps layout NDSI.jpg'">
+                        <div class="stack-lbl" style="background:#6d28d9;"><span>1a. NDSI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 10.1b — NDSI Interannuel (2017 à 2025) : Évolution pluriannuelle de l\'enneigement')">
+                        <img src="assets/NDSI_2017_2025.png" alt="NDSI 2017-2025" onerror="this.onerror=null; this.src='NDSI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>1b. NDSI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+
+                <!-- PAIRE 2 : MSI (Saisonnier 12 mois + Interannuel 2017–2025) -->
+                <div class="dual-stack" style="margin-bottom:0;">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 10.2a — MSI Saisonnier : Planche des 12 cartes mensuelles de stress hydrique (Janvier à Décembre)')">
+                        <img src="assets/maps layout MSII.png" alt="MSI 12 mois" onerror="this.src='maps layout MSII.png'">
+                        <div class="stack-lbl" style="background:#b91c1c;"><span>2a. MSI — Cycle Mensuel (12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 10.2b — MSI Interannuel (2017 à 2025) : Évolution pluriannuelle du stress hydrique')">
+                        <img src="assets/MSI_2017_2025.png" alt="MSI 2017-2025" onerror="this.onerror=null; this.src='MSI_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>2b. MSI — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Télédétection Sentinel-2 — Superposition Mensuelle (12 Mois) & Interannuelle (2017–2025) : NDSI & MSI</span>
+            <span>10 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 11. TEMPÉRATURE DE SURFACE : SUPERPOSITION LST (12M + 2017–2025)  -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="10">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-mnt">11 / Bloc 1 — Température de Surface (LST : 12 Mois & 2017–2025) & Synthèse du Bloc 1</span>
+                <h1>Température de Surface au Sol (LST) et Rôle Réservoir de l’Axe Central SO–NE</h1>
+                <h2>Superposition du cycle thermique mensuel (LST.png) et de la série interannuelle 2017–2025</h2>
+            </div>
+            <div class="header-meta">LST ÉTÉ : 53,7 À 55,8 °C (12M)<br>SÉRIE INTERANNUELLE : 2017–2025</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. LST (Land Surface Temperature : Saisonnier & 2017–2025)</h3>
+                <ul class="clean-list">
+                    <li><strong>Amplitude saisonnière (`LST.png`) :</strong> Minimale en hiver (<span class="hl-blue">-2,7 °C à +1,1 °C</span> en nov–déc), elle monte au printemps et culmine en <strong>juin–juillet (<span class="hl-red">53,7 °C à 55,8 °C</span> sur sols nus exposés)</strong>.</li>
+                    <li><strong>Série interannuelle 2017–2025 :</strong> Confirme de façon structurelle sur les 9 années l'opposition thermique entre le <strong>secteur Nord-Ouest toujours plus chaud</strong> (en rouge, avec des pics atteignant 47,6 à 50,3 °C en 2017, 2021, 2022 et 2024) et la <strong>diagonale centrale et sud-est d'altitude toujours plus fraîche</strong> (en bleu).</li>
+                </ul>
+
+                <h3>2. Conclusion générale du suivi par télédétection</h3>
+                <ul class="clean-list">
+                    <li><strong>Bilan saisonnier :</strong> Hiver froid/humide avec neige $\rightarrow$ <strong>Printemps (mars–mai) optimal</strong> (NDVI maximal, stress faible) $\rightarrow$ <strong>Été (juin–août) chaud et sec</strong> (LST élevée, baisse NDMI, hausse MSI) $\rightarrow$ Reprise automnale.</li>
+                    <li><strong>Zonage de vulnérabilité :</strong> Les secteurs <strong>Nord-Ouest (plus chaud et sec)</strong> et <strong>Sud-Est (moins végétalisé)</strong> sont les plus vulnérables, tandis que <strong>l'axe central SO–NE joue un rôle vital de château d'eau et de réserve écologique</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- SUPERPOSITION DE LA PAIRE LST : LST.png (12 mois) + LST_2017_2025.png + GRAPHIQUE ECHARTS -->
+            <div class="col-visual">
+                <div class="dual-stack single-zone">
+                    <div class="dual-stack-card ds-back" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 11.1a — LST Saisonnier : Planche des 12 cartes mensuelles de température de surface (Janvier à Décembre, LST.png)')">
+                        <img src="assets/LST.png" alt="LST 12 mois" onerror="this.src='LST.png'">
+                        <div class="stack-lbl" style="background:#b91c1c;"><span>1a. LST — Cycle Mensuel (`LST.png`, 12 Mois)</span><span>[Zoom]</span></div>
+                    </div>
+                    <div class="dual-stack-card ds-front" onclick="openDirectLightbox(this.querySelector('img').src, 'Fig 11.1b — LST Interannuel (2017 à 2025) : Évolution pluriannuelle de la température de surface')">
+                        <img src="assets/LST_2017_2025.png" alt="LST 2017-2025" onerror="this.onerror=null; this.src='LST_2017_2025.png';">
+                        <div class="stack-lbl" style="background:#111111;"><span>1b. LST — Série 2017–2025</span><span>[Zoom]</span></div>
+                    </div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <div class="chart-top-bar">
+                        <span class="chart-main-title">Évolution mensuelle de la Température de Surface LST : Maxima vs Minima (°C)</span>
+                    </div>
+                    <div id="chart-lst-mensuel" class="chart-surface" style="height:165px;"></div>
+                    <div class="axis-x-footer">► AXE HORIZONTAL (X) : Les 12 Mois Extraits des Cartes LST (Pic Thermique en Juin : 53,7 °C et Juillet : 55,8 °C)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 1 : Télédétection Sentinel-2 — Superposition Mensuelle & Interannuelle (2017–2025) : Température LST</span>
+            <span>11 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- ================================================================= -->
+    <!-- DÉBUT DU BLOC 2 INTACT (DIAPOSITIVES 12 À 15)                     -->
+    <!-- ================================================================= -->
+    <!-- ================================================================= -->
+
+    <!-- ================================================================= -->
+    <!-- 12. DIAPOSITIVE DE TRANSITION BLOC 2 SUR FOND ROSE CIEL           -->
+    <!-- ================================================================= -->
+    <section class="slide slide-transition" data-slide="11">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num">PROJET PILOTE STRATEAU • PROVINCE D'IFRANE</span>
+            </div>
+            <div class="header-meta">BASSIN HYDRAULIQUE DU SEBOU</div>
+        </div>
+
+        <div class="transition-center">
+            <span class="transition-kicker">PARTIE II (BLOC 2) • RESSOURCES & INFRASTRUCTURES</span>
+            <h1 class="transition-title">État des Lieux des Ressources en Eau et des Infrastructures Hydrauliques</h1>
+            <p class="transition-sub">Barrages, apports des sous-bassins versants, réseau hydrographique des oueds, nappes souterraines et sources</p>
+        </div>
+
+        <div class="slide-footer">
+            <span>STRATEAU Ifrane — Bloc 2 : État des Lieux des Ressources en Eau et des Infrastructures</span>
+            <span>12 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 13. BARRAGES, SOUS-BASSINS & IRRIGATION                           -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="12">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-infra">13 / Bloc 2 — Infrastructures Hydrauliques, Sous-Bassins Versants & Prélèvements (En Premier)</span>
+                <h1>Barrages, Apports des Sous-Bassins (315 Mm³/an) et Prélèvements d’Irrigation</h1>
+                <h2>Caractérisation des 6 sites de barrages, des 3 sous-bassins versants et du périmètre irrigué du barrage de Sidi Ahmed</h2>
+            </div>
+            <div class="header-meta">6 BARRAGES • 3 SOUS-BASSINS<br>BARRAGE SIDI AHMED : 2,92 MM³/AN</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Capacités et apports moyens annuels des 6 barrages</h3>
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Site de Barrage</th>
+                            <th>Capacité ($Mm^3$)</th>
+                            <th>Apports moyens annuels ($Mm^3$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Aït Moulay Ahmed</strong></td><td><span class="hl-blue">3,00 Mm³</span></td><td>25,50 Mm³/an</td></tr>
+                        <tr><td><strong>Bousraf</strong></td><td><span class="hl-blue">1,92 Mm³</span></td><td><span class="hl-green">28,40 Mm³/an</span></td></tr>
+                        <tr><td><strong>Michelifen (Tlat Jamaa)</strong></td><td>1,50 Mm³</td><td>7,30 Mm³/an</td></tr>
+                        <tr><td><strong>Ahellal</strong></td><td>1,50 Mm³</td><td>1,30 Mm³/an</td></tr>
+                        <tr><td><strong>Tizguit amont</strong></td><td>0,30 Mm³</td><td>11,60 Mm³/an</td></tr>
+                        <tr><td><strong>Tizguit aval</strong></td><td>0,12 Mm³</td><td><span class="hl-red">40,00 Mm³/an</span></td></tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Apports des sous-bassins versants</h3>
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Sous-Bassin Versant</th>
+                            <th>Apports annuels moyens ($Mm^3/\text{an}$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>1. Ouljet Soltane</strong></td><td><span class="hl-red">182 Mm³/an</span></td></tr>
+                        <tr><td><strong>2. Adarouch</strong></td><td><span class="hl-blue">86 Mm³/an</span></td></tr>
+                        <tr><td><strong>3. Tizguit au niveau de Sidi Echahmed</strong></td><td><strong>47 Mm³/an</strong></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="math-block" style="border-left-color:#15803d;">
+                    <div class="math-label" style="color:#15803d;">Usages de l'eau & Prélèvements pour l'irrigation : Barrage de Sidi Ahmed</div>
+                    Prélèvement par <strong>pompage</strong> avec un volume annuel autorisé de <span class="hl-green">2,92 Mm³/an</span> pour irriguer <strong>800 ha</strong> dans le <strong>bassin inférieur d'Amrass</strong> (commune de <strong>Wad Ifrane</strong>, cercle d'Azrou).
+                </div>
+            </div>
+
+            <div class="col-visual">
+                <figure class="asset-figure" style="margin-bottom:8px;">
+                    <img class="zoomable medium-map" src="assets/Cartes des sous bassins d'Ifrane.png" alt="Fig 13.1 — Carte des sous-bassins versants et des barrages de la province d'Ifrane (Ouljet Soltane, Adarouch, Tizguit)" onerror="this.src='assets/carte_barrages_sous_bassins.png'">
+                    <figcaption><span>Fig 13.1 — Carte des sous-bassins versants d'Ifrane (`Cartes des sous bassins d'Ifrane.png`)</span><span class="zoom-hint">[Cliquer pour agrandir la carte]</span></figcaption>
+                </figure>
+
+                <div class="chart-wrapper">
+                    <div class="chart-top-bar">
+                        <span class="chart-main-title">Comparaison des 6 Barrages : Capacité de Stockage vs Apports Annuels (Mm³)</span>
+                    </div>
+                    <div id="chart-barrages-apports" class="chart-surface" style="height:170px;"></div>
+                    <div class="axis-x-footer">► AXE HORIZONTAL (X) : Les 6 Sites de Barrages Recensés dans la Province d'Ifrane</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 2 : Ressources en Eau — Barrages, Sous-Bassins Versants & Prélèvements d'Irrigation</span>
+            <span>13 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 14. PRINCIPAUX OUEDS & RÉSEAU HYDROGRAPHIQUE                      -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="13">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-hydro">14 / Bloc 2 — Ressources Superficielles : Principaux Oueds & Stations Hydrométriques</span>
+                <h1>Présentation des Principaux Oueds et du Réseau Hydrographique d’Ifrane</h1>
+                <h2>Cartographie des cours d'eau au cœur du Moyen Atlas (3 310 km²) et débits moyens aux stations hydrométriques associées</h2>
+            </div>
+            <div class="header-meta">SUPERFICIE : 3 310 KM²<br>BASSIN HYDRAULIQUE DU SEBOU</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Contexte territorial et hydrographique</h3>
+                <ul class="clean-list">
+                    <li><strong>Situation géographique :</strong> Située au sud-ouest de la région de <strong>Fès-Meknès</strong>, au cœur du Moyen Atlas, la province couvre <span class="hl-blue">3 310 km²</span> au sein du bassin hydraulique du <strong>Sebou</strong>.</li>
+                    <li><strong>Activités économiques :</strong> Le territoire est porté par <strong>l'agriculture et l'élevage</strong>, <strong>l'exploitation forestière</strong> et <strong>le tourisme</strong> lié aux paysages montagnards et au patrimoine naturel.</li>
+                </ul>
+
+                <h3>2. Débits moyens des principaux oueds et stations associées</h3>
+                <p>Le réseau hydrographique superficiel s'organise autour de deux cours d'eau majeurs suivis par les stations hydrométriques principales :</p>
+
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Oued Principal</th>
+                            <th>Débit moyen ($m^3/\text{s}$)</th>
+                            <th>Volume annuel équivalent</th>
+                            <th>Station Hydrométrique</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Oued Tigrigra</strong></td>
+                            <td><span class="hl-blue">1,68 m³/s</span></td>
+                            <td>~52,98 Mm³/an</td>
+                            <td><strong>Station Sidi Mokhfi</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Oued Guigou</strong></td>
+                            <td><span class="hl-green">1,01 m³/s</span></td>
+                            <td>~31,85 Mm³/an</td>
+                            <td><strong>Station Aït Aïssa</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="metrics-strip">
+                    <div class="metric-item">
+                        <div class="val" style="color:#0369a1;">1,68 m³/s</div>
+                        <div class="lbl">Oued Tigrigra (Sidi Mokhfi)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="val" style="color:#15803d;">1,01 m³/s</div>
+                        <div class="lbl">Oued Guigou (Aït Aïssa)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="val">3 310 km²</div>
+                        <div class="lbl">Superficie (Bassin du Sebou)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-visual">
+                <figure class="asset-figure" style="margin-bottom:0;">
+                    <img class="zoomable" src="assets/carte_hydrographique.png" alt="Fig 14.1 — Réseau hydrographique et localisation des principaux oueds et stations hydrométriques de la province d'Ifrane" onerror="this.src='assets/Cartes des sous bassins d\'Ifrane.png'">
+                    <figcaption><span>Fig 14.1 — Réseau hydrographique et localisation des principaux oueds d'Ifrane</span><span class="zoom-hint">[Cliquer pour agrandir la carte]</span></figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 2 : Ressources en Eau — Réseau Hydrographique & Débits des Principaux Oueds</span>
+            <span>14 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 15. EAUX SOUTERRAINES : NAPPES & SOURCES                          -->
+    <!-- ================================================================= -->
+    <section class="slide" data-slide="14">
+        <div class="slide-header">
+            <div class="header-left">
+                <span class="section-num tag-nappe">15 / Bloc 2 — Eaux Souterraines : Bilan des Nappes Phréatiques & Sources Recensées</span>
+                <h1>Bilan Hydrogéologique des Nappes et Débits des Principales Sources (9,5 à 529 L/s)</h1>
+                <h2>Équilibre des nappes du Moyen Atlas (Tabulaire et Plissé) face au déficit des Basaltes d'Azrou (-9 Mm³) et de Fès-Meknès (-137 Mm³)</h2>
+            </div>
+            <div class="header-meta">QUALITÉ GLOBALE : BONNE<br>10 SOURCES MAJEURES RECENSÉES</div>
+        </div>
+
+        <div class="editorial-grid">
+            <div class="col-text">
+                <h3>1. Bilan hydrogéologique des 4 principales nappes</h3>
+                <p>La qualité globale des eaux superficielles et souterraines d'Ifrane est jugée <strong>bonne</strong>. Sur le plan quantitatif, le bilan oppose les nappes karstiques à l'équilibre aux nappes déficitaires :</p>
+
+                <table class="academic-table">
+                    <thead>
+                        <tr>
+                            <th>Nappe Souterraine</th>
+                            <th>Entrées ($Mm^3/\text{an}$)</th>
+                            <th>Sorties ($Mm^3/\text{an}$)</th>
+                            <th>Bilan ($Mm^3/\text{an}$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Moyen Atlas Tabulaire</strong></td><td>585 Mm³</td><td>585 Mm³</td><td><span class="hl-green">0 Mm³ (Équilibre)</span></td></tr>
+                        <tr><td><strong>Moyen Atlas Plissé</strong></td><td>412 Mm³</td><td>412 Mm³</td><td><span class="hl-green">0 Mm³ (Équilibre)</span></td></tr>
+                        <tr><td><strong>Basaltes d’Azrou</strong></td><td>53 Mm³</td><td>62 Mm³</td><td><span class="hl-red">-9 Mm³ (Déficit)</span></td></tr>
+                        <tr><td><strong>Fès-Meknès (en partie)</strong></td><td>420 Mm³</td><td>557 Mm³</td><td><span class="hl-red">-137 Mm³ (Déficit)</span></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="chart-wrapper" style="margin-top:6px;">
+                    <div class="chart-top-bar">
+                        <span class="chart-main-title">Débits moyens des 10 principales sources recensées (de 9,5 à 529 L/s)</span>
+                    </div>
+                    <div id="chart-sources-debits" class="chart-surface" style="height:195px;"></div>
+                    <div class="axis-x-footer">► AXE HORIZONTAL (X) : Les 10 Principales Sources d'Ifrane (Amghas 529 L/s et Ribaa 500 L/s en tête)</div>
+                </div>
+            </div>
+
+            <div class="col-visual">
+                <figure class="asset-figure" style="margin-bottom:0;">
+                    <img class="zoomable" src="assets/carte_nappes_sources.png" alt="Fig 15.1 — Localisation des nappes phréatiques, répartition des sources d'eau (points orange) et suivi piézométrique (triangles bleus) dans la province d'Ifrane" onerror="this.src='assets/carte geologique Ifrane.png'">
+                    <figcaption><span>Fig 15.1 — Carte des nappes phréatiques, des sources et des stations piézométriques</span><span class="zoom-hint">[Cliquer pour agrandir la carte]</span></figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="slide-footer">
+            <span>Bloc 2 : Ressources en Eau — Bilan des Eaux Souterraines, Suivi Piézométrique & Sources</span>
+            <span>15 / 15</span>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SCRIPT : ANIMATION HERO CANVAS + LIGHTBOX + ECHARTS + NAVIGATION  -->
+    <!-- ================================================================= -->
+    <script>
+        // 1. MOTEUR D'ANIMATION HYDRO-TOPOGRAPHIQUE TEMPS RÉEL (SLIDE 01)
+        (function initHeroCanvas() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w = 0, h = 0, t = 0;
+            let mouse = { x: -1000, y: -1000 };
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const heroSection = document.getElementById('heroSlide');
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            // Particules hydro-géostatistiques (représentant les stations, sources et flux)
+            const nodes = Array.from({ length: 42 }, (_, idx) => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.55,
+                vy: (Math.random() - 0.5) * 0.55,
+                r: idx % 5 === 0 ? 3.4 : 1.9,
+                isHub: idx % 5 === 0
+            }));
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                t += 0.012;
+
+                // A. Lignes de courant topographiques & ondes hydrologiques (MNT 722m -> 2420m)
+                const numLines = 14;
+                for (let i = 0; i < numLines; i++) {
+                    ctx.beginPath();
+                    const baseY = (h / (numLines + 1)) * (i + 1);
+                    const alpha = 0.05 + (i / numLines) * 0.12;
+                    ctx.strokeStyle = i % 3 === 0
+                        ? `rgba(56, 189, 248, ${alpha * 1.4})`
+                        : `rgba(148, 163, 184, ${alpha})`;
+                    ctx.lineWidth = i % 3 === 0 ? 1.5 : 0.9;
+
+                    for (let x = 0; x <= w; x += 28) {
+                        const dx = x - mouse.x;
+                        const dy = baseY - mouse.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const mouseWave = dist < 240 ? (1 - dist / 240) * 26 * Math.sin(dist * 0.04 - t * 3) : 0;
+
+                        const y = baseY
+                            + Math.sin(x * 0.0035 + t + i * 0.45) * 28
+                            + Math.cos(x * 0.008 - t * 0.7 + i) * 14
+                            + mouseWave;
+
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                // B. Réseau maillé des 10 communes & stations hydrométriques
+                for (let i = 0; i < nodes.length; i++) {
+                    const p = nodes[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > w) p.vx *= -1;
+                    if (p.y < 0 || p.y > h) p.vy *= -1;
+
+                    // Connexions entre noeuds proches
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const q = nodes[j];
+                        const dx = p.x - q.x;
+                        const dy = p.y - q.y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < 165) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(125, 211, 252, ${(1 - d / 165) * 0.18})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(q.x, q.y);
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Dessin du noeud
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.isHub ? '#38bdf8' : 'rgba(226, 232, 240, 0.55)';
+                    ctx.fill();
+
+                    if (p.isHub) {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r + 4 + Math.sin(t * 2.5 + i) * 2.5, 0, Math.PI * 2);
+                        ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // 2. LIGHTBOX PLEIN ÉCRAN (ZOOM SUR LES CARTES)
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCap = document.getElementById('lightbox-cap');
+
+        function openDirectLightbox(src, caption) {
+            lightboxImg.src = src;
+            lightboxCap.textContent = caption || '';
+            lightbox.classList.add('open');
+        }
+
+        document.querySelectorAll('figure.asset-figure').forEach(fig => {
+            const img = fig.querySelector('img.zoomable');
+            const hint = fig.querySelector('.zoom-hint');
+            const openFn = (e) => {
+                e.stopPropagation();
+                openDirectLightbox(img.src, img.alt || '');
+            };
+            if (img) img.addEventListener('click', openFn);
+            if (hint) hint.addEventListener('click', openFn);
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+        }
+
+        // 3. NAVIGATION PAR CLAVIER ET INDICATEUR DE PAGE
+        const slides = document.querySelectorAll('.slide');
+        const pageIndex = document.getElementById('pageIndex');
+
+        slides.forEach((s, i) => {
+            s.setAttribute('data-slide', i);
+            const tick = document.createElement('div');
+            tick.className = 'page-tick' + (i === 0 ? ' active' : '');
+            tick.onclick = () => s.scrollIntoView({ behavior: 'smooth' });
+            pageIndex.appendChild(tick);
+        });
+        const ticks = document.querySelectorAll('.page-tick');
+
+        let activeIdx = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                return;
+            }
+            if (lightbox.classList.contains('open')) return;
+
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+                e.preventDefault();
+                activeIdx = Math.min(slides.length - 1, activeIdx + 1);
+                slides[activeIdx].scrollIntoView({ behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                activeIdx = Math.max(0, activeIdx - 1);
+                slides[activeIdx].scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // 4. CONFIGURATIONS DES GRAPHIQUES ECHARTS (SANS LE GRAPHE DE LA SLIDE 05)
+        const fontFamily = "'Plus Jakarta Sans', sans-serif";
+        const chartInstances = {};
+
+        const chartConfigs = {
+            // DIAPO 07 (BLOC 1) : Cycle Saisonnier Comparé des Indices Spectraux Maxima
+            'chart-sentinel-cycle': {
+                backgroundColor: 'transparent',
+                textStyle: { fontFamily: fontFamily, color: '#111111' },
+                animationDuration: 2800,
+                legend: {
+                    top: 4,
+                    left: 'center',
+                    itemGap: 14,
+                    textStyle: { fontSize: 11, fontWeight: 600, color: '#111111' },
+                    data: ['NDVI Max (Végétation)', 'SAVI Max (Végét. Ajustée)', 'NDMI Max (Humidité)', 'NDSI Max (Neige)']
+                },
+                tooltip: { trigger: 'axis' },
+                grid: { top: 48, bottom: 36, left: 52, right: 24 },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLabel: { interval: 0, fontSize: 11, fontWeight: 600, color: '#111111' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    data: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0.1,
+                    max: 1.05,
+                    axisLabel: { color: '#111111', fontSize: 11 },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    splitLine: { lineStyle: { color: '#eeeeee' } }
+                },
+                series: [
+                    { name: 'NDVI Max (Végétation)', type: 'line', smooth: true, symbolSize: 7, lineStyle: { width: 3.2, color: '#15803d' }, itemStyle: { color: '#15803d' }, data: [1.00, 0.877, 0.922, 0.959, 0.906, 0.824, 0.878, 0.855, 0.849, 0.838, 0.931, 0.994] },
+                    { name: 'SAVI Max (Végét. Ajustée)', type: 'line', smooth: true, symbolSize: 6, lineStyle: { width: 2.5, type: 'dashed', color: '#65a30d' }, itemStyle: { color: '#65a30d' }, data: [0.784, 0.718, 0.781, 0.833, 0.797, 0.711, 0.698, 0.722, 0.738, 0.682, 0.789, 0.884] },
+                    { name: 'NDMI Max (Humidité)', type: 'line', smooth: true, symbolSize: 7, lineStyle: { width: 3, color: '#0369a1' }, itemStyle: { color: '#0369a1' }, data: [0.898, 0.827, 0.813, 0.776, 0.669, 0.584, 0.575, 0.535, 0.622, 0.573, 0.883, 0.881] },
+                    { name: 'NDSI Max (Neige)', type: 'line', smooth: true, symbolSize: 7, lineStyle: { width: 2.8, color: '#6d28d9' }, itemStyle: { color: '#6d28d9' }, areaStyle: { opacity: 0.08, color: '#6d28d9' }, data: [0.873, 0.815, 0.736, 0.834, 0.404, 0.251, 0.530, 0.171, 0.360, 0.551, 0.908, 0.938] }
+                ]
+            },
+
+            // DIAPO 11 (BLOC 1) : Évolution Mensuelle de la Température de Surface LST (Maxima vs Minima en °C)
+            'chart-lst-mensuel': {
+                backgroundColor: 'transparent',
+                textStyle: { fontFamily: fontFamily, color: '#111111' },
+                animationDuration: 2600,
+                legend: { top: 0, left: 'center', itemGap: 18, textStyle: { fontSize: 10.5, fontWeight: 600, color: '#111111' }, data: ['LST Max Surface (°C - Sols Exposés NO)', 'LST Min Surface (°C - Reliefs & Forêts)'] },
+                tooltip: { trigger: 'axis', valueFormatter: (v) => v + ' °C' },
+                grid: { top: 28, bottom: 28, left: 48, right: 20 },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLabel: { interval: 0, fontSize: 10.5, fontWeight: 600, color: '#111111' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    data: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+                },
+                yAxis: {
+                    type: 'value',
+                    min: -5,
+                    max: 60,
+                    axisLabel: { color: '#111111', fontSize: 10, formatter: '{value} °C' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    splitLine: { lineStyle: { color: '#eeeeee' } }
+                },
+                series: [
+                    { name: 'LST Max Surface (°C - Sols Exposés NO)', type: 'line', smooth: true, symbolSize: 7, lineStyle: { width: 3.2, color: '#b91c1c' }, itemStyle: { color: '#b91c1c' }, areaStyle: { opacity: 0.1, color: '#b91c1c' }, data: [23.64, 27.82, 28.28, 36.13, 45.71, 53.72, 55.84, 43.60, 45.98, 26.03, 11.89, 13.83] },
+                    { name: 'LST Min Surface (°C - Reliefs & Forêts)', type: 'line', smooth: true, symbolSize: 6, lineStyle: { width: 2.5, color: '#0369a1' }, itemStyle: { color: '#0369a1' }, data: [6.95, 5.61, 9.23, 15.29, 17.74, 9.03, 11.57, 8.47, 24.13, 11.93, -2.68, 1.14] }
+                ]
+            },
+
+            // DIAPO 13 (BLOC 2) : Barrages (Capacité Mm3 vs Apports moyens annuels Mm3)
+            'chart-barrages-apports': {
+                backgroundColor: 'transparent',
+                textStyle: { fontFamily: fontFamily, color: '#111111' },
+                animationDuration: 2400,
+                legend: { top: 0, left: 'center', itemGap: 16, textStyle: { fontSize: 10.5, fontWeight: 600, color: '#111111' }, data: ['Apports Moyens Annuels (Mm³/an)', 'Capacité de Stockage (Mm³)'] },
+                tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+                grid: { top: 28, bottom: 32, left: 48, right: 48 },
+                xAxis: {
+                    type: 'category',
+                    axisLabel: { interval: 0, fontSize: 10, fontWeight: 600, color: '#111111' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    data: ['Tizguit aval', 'Bousraf', 'Aït M. Ahmed', 'Tizguit amont', 'Michelifen', 'Ahellal']
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        min: 0,
+                        max: 45,
+                        axisLabel: { color: '#111111', fontSize: 10, formatter: '{value} Mm³' },
+                        axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                        splitLine: { lineStyle: { color: '#eeeeee' } }
+                    },
+                    {
+                        type: 'value',
+                        min: 0,
+                        max: 3.6,
+                        axisLabel: { color: '#991b1b', fontSize: 10, fontWeight: 600, formatter: '{value} Mm³' },
+                        axisLine: { show: true, lineStyle: { color: '#b91c1c', width: 1.5 } },
+                        splitLine: { show: false }
+                    }
+                ],
+                series: [
+                    { name: 'Apports Moyens Annuels (Mm³/an)', type: 'bar', yAxisIndex: 0, barWidth: '40%', data: [40.0, 28.4, 25.5, 11.6, 7.3, 1.3], itemStyle: { color: '#0369a1' } },
+                    { name: 'Capacité de Stockage (Mm³)', type: 'line', yAxisIndex: 1, smooth: true, symbolSize: 7, lineStyle: { width: 3, color: '#b91c1c' }, itemStyle: { color: '#b91c1c' }, data: [0.12, 1.92, 3.00, 0.30, 1.50, 1.50] }
+                ]
+            },
+
+            // DIAPO 15 (BLOC 2) : Débits moyens des 10 principales sources d'eau (L/s)
+            'chart-sources-debits': {
+                backgroundColor: 'transparent',
+                textStyle: { fontFamily: fontFamily, color: '#111111' },
+                animationDuration: 2400,
+                tooltip: { trigger: 'axis', valueFormatter: (v) => v + ' L/s' },
+                grid: { top: 24, bottom: 42, left: 48, right: 16 },
+                xAxis: {
+                    type: 'category',
+                    axisLabel: { interval: 0, rotate: 24, fontSize: 10, fontWeight: 600, color: '#111111' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    data: ['Amghas', 'Ribaa', 'Tizgdelt', 'Aghb. Aberch.', 'Sidi Mimoun', 'Zerrouka', 'Ras El Ma', 'Sidi Rachid', 'Atrous', 'Aghbal']
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 600,
+                    axisLabel: { color: '#111111', fontSize: 10, formatter: '{value} L/s' },
+                    axisLine: { show: true, lineStyle: { color: '#111111', width: 1.5 } },
+                    splitLine: { lineStyle: { color: '#eeeeee' } }
+                },
+                series: [
+                    {
+                        name: 'Débit moyen (L/s)',
+                        type: 'bar',
+                        barWidth: '46%',
+                        label: { show: true, position: 'top', fontSize: 9.5, fontWeight: 700, color: '#111111' },
+                        data: [
+                            { value: 529, itemStyle: { color: '#0369a1' } },
+                            { value: 500, itemStyle: { color: '#0369a1' } },
+                            { value: 232, itemStyle: { color: '#111111' } },
+                            { value: 200, itemStyle: { color: '#111111' } },
+                            { value: 200, itemStyle: { color: '#111111' } },
+                            { value: 184, itemStyle: { color: '#111111' } },
+                            { value: 64, itemStyle: { color: '#71717a' } },
+                            { value: 46, itemStyle: { color: '#71717a' } },
+                            { value: 28, itemStyle: { color: '#71717a' } },
+                            { value: 9.5, itemStyle: { color: '#71717a' } }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = parseInt(entry.target.getAttribute('data-slide'));
+                    activeIdx = idx;
+                    ticks.forEach((t, i) => t.classList.toggle('active', i === idx));
+
+                    const chartEl = entry.target.querySelector('.chart-surface');
+                    if (chartEl && chartConfigs[chartEl.id]) {
+                        const id = chartEl.id;
+                        if (!chartInstances[id]) {
+                            chartInstances[id] = echarts.init(chartEl);
+                        } else {
+                            chartInstances[id].clear();
+                        }
+                        chartInstances[id].setOption(chartConfigs[id], true);
+                    }
+                }
+            });
+        }, { threshold: window.innerWidth <= 960 ? 0.2 : 0.55 });
+
+        slides.forEach(s => observer.observe(s));
+        window.addEventListener('resize', () => Object.values(chartInstances).forEach(c => c.resize()));
+    </script>
+</body>
+</html>
